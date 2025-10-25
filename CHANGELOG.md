@@ -62,6 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🌍 **Multi-language Infrastructure** - TR/EN dil desteği altyapısı
 - 📄 **CSV Export Infrastructure** - CSV dışa aktarma altyapısı
 - 📈 **Analytics Dashboard** - İstatistikler için ayrı sayfa (`analytics.html`)
+- 📥 **Console Logging System** - Tüm console loglarını localStorage'a kaydetme
+  - Debug için kullanıcıya log indirme özelliği
+  - 10,000 satırlık log tarihçesi
+  - "Download Logs" butonu ile logları text dosyası olarak indirme
+- 🔧 **Server Directory Fix** - Server'ın doğru dizinde başlatılması (`InstagramUnfollowers/public`)
 
 ### Changed
 - 🔄 **Filter State Management** - Filtreleme state yönetimi iyileştirildi

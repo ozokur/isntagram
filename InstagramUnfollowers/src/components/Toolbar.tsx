@@ -134,6 +134,18 @@ export const Toolbar = ({
             >
               📝 Changelog
             </button>
+            <button
+              className="copy-list"
+              onClick={() => {
+                if (typeof (window as any).downloadLogs === 'function') {
+                  (window as any).downloadLogs();
+                } else {
+                  alert('Log system not initialized. Please refresh the page.');
+                }
+              }}
+            >
+              📥 Download Logs
+            </button>
           </>
         )}
         {
