@@ -49,6 +49,9 @@ export const Searching = ({
       <aside className="app-sidebar">
         <menu className="flex column m-clear p-clear">
           <p>Filter</p>
+          <div style={{padding: '10px', background: '#222', borderRadius: '5px', marginBottom: '10px', textAlign: 'center'}}>
+            <span style={{fontSize: '0.8em', color: '#00FFFF'}}>Ozan Okur Unfollowers v1.0.0</span>
+          </div>
           <label className="badge m-small">
             <input
               type="checkbox"
