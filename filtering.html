@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ozan Okur Unfollowers - Enhanced Filtering</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+        
+        .filters-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .filters-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+        
+        .filter-section h3 {
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            color: #333;
+        }
+        
+        .select-group {
+            margin-top: 10px;
+        }
+        
+        .select-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        
+        .date-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .results-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-header h2 {
+            color: #333;
+        }
+        
+        .count-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .badge.business {
+            background: #667eea;
+            color: white;
+        }
+        
+        .badge.personal {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge.creator {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .badge.inactive {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .badge.active {
+            background: #28a745;
+            color: white;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-indicator.active {
+            background: #28a745;
+        }
+        
+        .status-indicator.inactive {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Ozan Okur Unfollowers - Enhanced Filtering</h1>
+            <p>Gelişmiş filtreleme seçenekleri ile hedef kitle analizi</p>
+        </div>
+        
+        <div class="content-grid">
+            <div class="filters-panel">
+                <h2>🔍 Filtreler</h2>
+                
+                <div class="filter-section">
+                    <h3>Hesap Türü</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="business" checked>
+                            <label for="business">Business</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="personal" checked>
+                            <label for="personal">Personal</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="creator" checked>
+                            <label for="creator">Creator</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Son Post Aktivitesi</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lastPostEnabled">
+                        <label for="lastPostEnabled">Aktif Filtre</label>
+                    </div>
+                    <div class="select-group">
+                        <select id="lastPostPeriod">
+                            <option value="7">Son 1 Hafta</option>
+                            <option value="30">Son 1 Ay</option>
+                            <option value="90">Son 3 Ay</option>
+                            <option value="180">Son 6 Ay</option>
+                            <option value="custom">Özel Tarih</option>
+                        </select>
+                    </div>
+                    <input type="date" id="customDate" class="date-input" style="display: none;">
+                </div>
+                
+                <div class="filter-section">
+                    <h3>Inaktif Hesaplar</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="showInactive">
+                        <label for="showInactive">Inaktifleri Göster</label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="applyFilters()">Filtreleri Uygula</button>
+                    <button class="btn btn-secondary" onclick="exportToCSV()">CSV'ye Aktar</button>
+                    <button class="btn btn-secondary" onclick="importData()">Veri Yükle</button>
+                </div>
+            </div>
+            
+            <div class="results-panel">
+                <div class="results-header">
+                    <h2>📊 Sonuçlar</h2>
+                    <div class="count-badge" id="resultCount">0 Sonuç</div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Hesap Türü</th>
+                                <th>Son Post</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <tr>
+                                <td colspan="5" class="no-data">
+                                    Filtreleri uygulamak için yukarıdaki butona tıklayın
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let userData = [];
+        
+        // Özel tarih seçeneği için toggle
+        document.getElementById('lastPostPeriod').addEventListener('change', function() {
+            const customDate = document.getElementById('customDate');
+            if (this.value === 'custom') {
+                customDate.style.display = 'block';
+            } else {
+                customDate.style.display = 'none';
+            }
+        });
+        
+        function applyFilters() {
+            const business = document.getElementById('business').checked;
+            const personal = document.getElementById('personal').checked;
+            const creator = document.getElementById('creator').checked;
+            const lastPostEnabled = document.getElementById('lastPostEnabled').checked;
+            const lastPostPeriod = document.getElementById('lastPostPeriod').value;
+            const showInactive = document.getElementById('showInactive').checked;
+            
+            let filtered = userData.filter(user => {
+                // Account type filter
+                if (user.account_type) {
+                    if (user.account_type === 'business' && !business) return false;
+                    if (user.account_type === 'personal' && !personal) return false;
+                    if (user.account_type === 'creator' && !creator) return false;
+                }
+                
+                // Last post filter
+                if (lastPostEnabled && user.last_post_timestamp) {
+                    const daysAgo = getDaysSince(user.last_post_timestamp);
+                    const threshold = lastPostPeriod === 'custom' ? 
+                        getDaysSince(Date.parse(document.getElementById('customDate').value)) : 
+                        parseInt(lastPostPeriod);
+                    
+                    if (daysAgo > threshold) return false;
+                }
+                
+                // Inactive filter
+                if (!showInactive && user.is_inactive) return false;
+                
+                return true;
+            });
+            
+            displayResults(filtered);
+        }
+        
+        function getDaysSince(timestamp) {
+            return Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
+        }
+        
+        function displayResults(results) {
+            const tbody = document.getElementById('resultsBody');
+            const count = document.getElementById('resultCount');
+            
+            count.textContent = `${results.length} Sonuç`;
+            
+            if (results.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="no-data">Sonuç bulunamadı</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = results.map(user => `
+                <tr>
+                    <td>@${user.username}</td>
+                    <td><span class="badge ${user.account_type || 'personal'}">${user.account_type || 'Personal'}</span></td>
+                    <td>${user.last_post_timestamp ? formatDate(user.last_post_timestamp) : 'Bilinmiyor'}</td>
+                    <td>
+                        <span class="status-indicator ${user.is_inactive ? 'inactive' : 'active'}"></span>
+                        ${user.is_inactive ? 'Inaktif' : 'Aktif'}
+                    </td>
+                    <td>
+                        <a href="https://instagram.com/${user.username}" target="_blank">👁️ Profil</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const daysAgo = getDaysSince(timestamp);
+            
+            if (daysAgo === 0) return 'Bugün';
+            if (daysAgo === 1) return 'Dün';
+            if (daysAgo < 7) return `${daysAgo} gün önce`;
+            if (daysAgo < 30) return `${Math.floor(daysAgo / 7)} hafta önce`;
+            if (daysAgo < 365) return `${Math.floor(daysAgo / 30)} ay önce`;
+            return `${Math.floor(daysAgo / 365)} yıl önce`;
+        }
+        
+        function exportToCSV() {
+            const filtered = getFilteredData();
+            const csv = convertToCSV(filtered);
+            downloadCSV(csv, 'filtered_users.csv');
+        }
+        
+        function convertToCSV(data) {
+            const headers = ['username', 'account_type', 'last_post', 'is_inactive'];
+            const rows = data.map(user => [
+                user.username,
+                user.account_type || 'personal',
+                user.last_post_timestamp ? formatDate(user.last_post_timestamp) : '',
+                user.is_inactive ? 'Yes' : 'No'
+            ]);
+            
+            return [headers, ...rows].map(row => row.join(',')).join('\n');
+        }
+        
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+        
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        userData = data;
+                        alert(`${data.length} kullanıcı yüklendi`);
+                    } catch (error) {
+                        alert('JSON dosyası okunamadı');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function getFilteredData() {
+            return userData; // Simplified for now
+        }
+    </script>
+</body>
+</html>
+
