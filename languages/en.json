@@ -1,0 +1,26 @@
+{
+  "app_name": "Ozan Okur Unfollowers",
+  "start_server": "Start Server",
+  "stop_server": "Stop Server",
+  "check_status": "Check Status",
+  "copy_code": "Copy Code",
+  "run": "RUN",
+  "scanning": "Scanning...",
+  "completed": "Completed",
+  "settings": "Settings",
+  "unfollow": "Unfollow",
+  "whitelist": "Whitelist",
+  "filter": "Filter",
+  "verified": "Verified",
+  "private": "Private",
+  "without_pic": "Without Profile Picture",
+  "non_followers": "Non-Followers",
+  "followers": "Followers",
+  "all": "All",
+  "select_all": "Select All",
+  "pause": "Pause",
+  "resume": "Resume",
+  "export": "Export",
+  "search": "Search..."
+}
+

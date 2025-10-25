@@ -1,0 +1,26 @@
+{
+  "app_name": "Ozan Okur Unfollowers",
+  "start_server": "Server Başlat",
+  "stop_server": "Server Durdur",
+  "check_status": "Durum Kontrol",
+  "copy_code": "Kodu Kopyala",
+  "run": "ÇALIŞTIR",
+  "scanning": "Taranıyor...",
+  "completed": "Tamamlandı",
+  "settings": "Ayarlar",
+  "unfollow": "Unfollow",
+  "whitelist": "Whitelist",
+  "filter": "Filtrele",
+  "verified": "Doğrulanmış",
+  "private": "Gizli",
+  "without_pic": "Profil Fotoğrafı Yok",
+  "non_followers": "Takip Etmeyenler",
+  "followers": "Takipçiler",
+  "all": "Tümü",
+  "select_all": "Tümünü Seç",
+  "pause": "Duraklat",
+  "resume": "Devam Et",
+  "export": "Dışa Aktar",
+  "search": "Ara..."
+}
+
