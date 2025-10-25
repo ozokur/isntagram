@@ -410,6 +410,19 @@
     const originalWarn = console.warn;
     const originalInfo = console.info;
     
+    // List of errors to ignore (Instagram internal errors)
+    const IGNORED_ERRORS = [
+      'WebSocket is already in CLOSING or CLOSED state',
+      'Invalid frame header',
+      'Unexpected server response',
+      'Failed to execute',
+      'NetworkError'
+    ];
+    
+    function shouldIgnoreError(message) {
+      return IGNORED_ERRORS.some(ignored => message.includes(ignored));
+    }
+    
     function addLog(type, ...args) {
       const timestamp = new Date().toISOString();
       const message = args.map(arg => {
@@ -422,6 +435,13 @@
         }
         return String(arg);
       }).join(' ');
+      
+      // Ignore Instagram internal errors
+      if (type === 'error' && shouldIgnoreError(message)) {
+        // Still show in console but don't log
+        originalError.apply(console, args);
+        return;
+      }
       
       const logEntry = {
         timestamp,
