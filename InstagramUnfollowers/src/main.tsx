@@ -315,8 +315,8 @@ function App() {
       const updatedResults = await Promise.all(
         results.map(async (user) => {
           try {
-            // Fetch last post timestamp
-            const lastPostTimestamp = await fetchUserLastPostTimestamp(user.username);
+            // Fetch last post timestamp (using user ID, not username)
+            const lastPostTimestamp = await fetchUserLastPostTimestamp(user.id);
             
             // Fetch account type
             const accountType = await fetchUserAccountType(user.username);

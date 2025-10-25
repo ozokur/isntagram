@@ -171,37 +171,36 @@ export function unfollowUserUrlGenerator(idToUnfollow: string): string {
  * Fetch user's last post timestamp from their profile page
  * This makes a request to Instagram's GraphQL API to get the user's media
  */
-export async function fetchUserLastPostTimestamp(username: string): Promise<number | undefined> {
+export async function fetchUserLastPostTimestamp(userId: string): Promise<number | undefined> {
   try {
     // Instagram GraphQL query to get user's posts
-    const query = {
-      query_hash: "e769aa90f347a32423763fc490445c3f",
-      variables: JSON.stringify({
-        id: username,
-        first: 1, // Only get the first (most recent) post
-      })
+    // Using the same query hash as Instagram uses for user media
+    const queryHash = "e769aa90f347a32423763fc490445c3f";
+    const variables = {
+      id: userId,
+      first: 1, // Only get the first (most recent) post
     };
     
-    const url = `https://www.instagram.com/graphql/query/?query_hash=${query.query_hash}&variables=${query.variables}`;
+    const url = `https://www.instagram.com/graphql/query/?query_hash=${queryHash}&variables=${encodeURIComponent(JSON.stringify(variables))}`;
     
     const response = await fetch(url);
     const data = await response.json();
     
     // Debug: log the response
-    console.log(`[${username}] Fetch response:`, data);
+    console.log(`[User ID: ${userId}] Fetch response:`, data);
     
     // Parse the response to get the timestamp of the first post
     if (data.data?.user?.edge_owner_to_timeline_media?.edges?.length > 0) {
       const firstPost = data.data.user.edge_owner_to_timeline_media.edges[0].node;
       const timestamp = firstPost.taken_at_timestamp * 1000; // Convert to milliseconds
-      console.log(`[${username}] Last post timestamp:`, timestamp, new Date(timestamp));
+      console.log(`[User ID: ${userId}] Last post timestamp:`, timestamp, new Date(timestamp));
       return timestamp;
     }
     
-    console.log(`[${username}] No posts found`);
+    console.log(`[User ID: ${userId}] No posts found`);
     return undefined;
   } catch (error) {
-    console.error(`Error fetching last post for ${username}:`, error);
+    console.error(`Error fetching last post for user ID ${userId}:`, error);
     return undefined;
   }
 }
