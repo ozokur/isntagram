@@ -187,12 +187,18 @@ export async function fetchUserLastPostTimestamp(username: string): Promise<numb
     const response = await fetch(url);
     const data = await response.json();
     
+    // Debug: log the response
+    console.log(`[${username}] Fetch response:`, data);
+    
     // Parse the response to get the timestamp of the first post
     if (data.data?.user?.edge_owner_to_timeline_media?.edges?.length > 0) {
       const firstPost = data.data.user.edge_owner_to_timeline_media.edges[0].node;
-      return firstPost.taken_at_timestamp * 1000; // Convert to milliseconds
+      const timestamp = firstPost.taken_at_timestamp * 1000; // Convert to milliseconds
+      console.log(`[${username}] Last post timestamp:`, timestamp, new Date(timestamp));
+      return timestamp;
     }
     
+    console.log(`[${username}] No posts found`);
     return undefined;
   } catch (error) {
     console.error(`Error fetching last post for ${username}:`, error);
