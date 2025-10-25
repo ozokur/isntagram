@@ -311,33 +311,60 @@ function App() {
       setToast({ show: true, text: "Scanning completed!" });
       
       // Now fetch additional user data (last post, account type)
-      setToast({ show: true, text: "Fetching user profile data..." });
-      const updatedResults = await Promise.all(
-        results.map(async (user) => {
-          try {
-            // Fetch last post timestamp (using user ID, not username)
-            const lastPostTimestamp = await fetchUserLastPostTimestamp(user.id);
-            
-            // Fetch account type
-            const accountType = await fetchUserAccountType(user.username);
-            
-            // Determine if inactive (no post in last 6 months)
-            const isInactive = lastPostTimestamp ? 
-              (Date.now() - lastPostTimestamp) > (6 * 30 * 24 * 60 * 60 * 1000) : 
-              true;
-            
-            return {
-              ...user,
-              last_post_timestamp: lastPostTimestamp,
-              account_type: accountType,
-              is_inactive: isInactive,
-            };
-          } catch (error) {
-            console.error(`Error fetching data for ${user.username}:`, error);
-            return user;
+      // Serial processing to avoid rate limiting
+      setToast({ show: true, text: "Fetching user profile data (slowly to avoid rate limits)..." });
+      const updatedResults: UserNode[] = [];
+      let rateLimitHit = false;
+      
+      for (let i = 0; i < results.length; i++) {
+        const user = results[i];
+        
+        // Check if rate limit was hit
+        if (rateLimitHit) {
+          updatedResults.push(user);
+          continue;
+        }
+        
+        try {
+          // Fetch last post timestamp (using user ID, not username)
+          const lastPostTimestamp = await fetchUserLastPostTimestamp(user.id);
+          
+          // Small delay between requests
+          await sleep(500);
+          
+          // Fetch account type
+          const accountType = await fetchUserAccountType(user.username);
+          
+          // Determine if inactive (no post in last 6 months)
+          const isInactive = lastPostTimestamp ? 
+            (Date.now() - lastPostTimestamp) > (6 * 30 * 24 * 60 * 60 * 1000) : 
+            true;
+          
+          updatedResults.push({
+            ...user,
+            last_post_timestamp: lastPostTimestamp,
+            account_type: accountType,
+            is_inactive: isInactive,
+          });
+          
+          // Add delay to avoid rate limiting
+          await sleep(2000);
+          
+          // Show progress
+          if (i % 10 === 0) {
+            setToast({ show: true, text: `Fetching profile data... ${i + 1}/${results.length}` });
           }
-        })
-      );
+        } catch (error) {
+          console.warn(`Error fetching data for ${user.username}:`, error);
+          updatedResults.push(user);
+          
+          // If it's a rate limit error, stop fetching
+          if (error instanceof Error && error.message.includes('429')) {
+            rateLimitHit = true;
+            setToast({ show: true, text: "Rate limit reached. Skipping remaining accounts." });
+          }
+        }
+      }
       
       // Update state with enhanced data
       setState(prevState => {
@@ -350,7 +377,11 @@ function App() {
         };
       });
       
-      setToast({ show: true, text: "Profile data fetched successfully!" });
+      if (rateLimitHit) {
+        setToast({ show: true, text: "Profile data fetch completed (some accounts skipped due to rate limit)" });
+      } else {
+        setToast({ show: true, text: "Profile data fetched successfully!" });
+      }
     };
     scan();
     // Dependency array not entirely legit, but works this way. TODO: Find a way to fix.

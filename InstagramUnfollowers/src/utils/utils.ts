@@ -185,6 +185,11 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
     
     const response = await fetch(url);
     
+    // Check for rate limit
+    if (response.status === 429) {
+      throw new Error('429 Rate limit exceeded');
+    }
+    
     // Check if response is JSON
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
@@ -208,6 +213,9 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
     console.log(`[User ID: ${userId}] No posts found`);
     return undefined;
   } catch (error) {
+    if (error instanceof Error && error.message.includes('429')) {
+      throw error; // Re-throw rate limit errors
+    }
     console.warn(`[User ID: ${userId}] Could not fetch last post (rate limit or user not found)`);
     return undefined;
   }
@@ -219,6 +227,11 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
 export async function fetchUserAccountType(username: string): Promise<'business' | 'personal' | 'creator' | undefined> {
   try {
     const response = await fetch(`https://www.instagram.com/${username}/?__a=1&__d=dis`);
+    
+    // Check for rate limit
+    if (response.status === 429) {
+      throw new Error('429 Rate limit exceeded');
+    }
     
     // Check if response is JSON
     const contentType = response.headers.get('content-type');
@@ -237,6 +250,9 @@ export async function fetchUserAccountType(username: string): Promise<'business'
     
     return 'personal';
   } catch (error) {
+    if (error instanceof Error && error.message.includes('429')) {
+      throw error; // Re-throw rate limit errors
+    }
     console.warn(`[${username}] Could not fetch account type (rate limit or user not found)`);
     return undefined;
   }
