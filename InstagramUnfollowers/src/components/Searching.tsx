@@ -118,6 +118,43 @@ export const Searching = ({
             {scanningPaused ? "Resume" : "Pause"}
           </button>
         </div>
+        <button
+          className="button-control"
+          style={{width: '100%', marginBottom: '10px', backgroundColor: '#4CAF50'}}
+          onClick={() => {
+            if (state.status !== "scanning") {
+              return;
+            }
+            const allUsers = getUsersForDisplay(
+              state.results,
+              state.whitelistedResults,
+              state.currentTab,
+              state.searchTerm,
+              state.filter,
+            );
+            setState({
+              ...state,
+              selectedResults: allUsers,
+            });
+          }}
+        >
+          ✅ Select All ({usersForDisplay.length})
+        </button>
+        <button
+          className="button-control"
+          style={{width: '100%', marginBottom: '10px', backgroundColor: '#f44336'}}
+          onClick={() => {
+            if (state.status !== "scanning") {
+              return;
+            }
+            setState({
+              ...state,
+              selectedResults: [],
+            });
+          }}
+        >
+          ❌ Clear Selection
+        </button>
         <div className="grow t-center">
           <p>Pages</p>
           <a
