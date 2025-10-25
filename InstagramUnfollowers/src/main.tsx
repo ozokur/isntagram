@@ -15,6 +15,8 @@ import {
   getCookie,
   getCurrentPageUnfollowers,
   getUsersForDisplay, sleep, unfollowUserUrlGenerator, urlGenerator,
+  fetchUserLastPostTimestamp,
+  fetchUserAccountType,
 } from "./utils/utils";
 import { NotSearching } from "./components/NotSearching";
 import { State } from "./model/state";
@@ -277,21 +279,7 @@ function App() {
         hasNext = receivedData.page_info.has_next_page;
         url = urlGenerator(receivedData.page_info.end_cursor);
         currentFollowedUsersCount += receivedData.edges.length;
-        receivedData.edges.forEach(x => {
-          const node = x.node;
-          // Add mock data for testing filters (will be replaced with real API data later)
-          const mockAccountType: 'business' | 'personal' | 'creator' = Math.random() > 0.66 ? 'business' : Math.random() > 0.5 ? 'creator' : 'personal';
-          const mockNode: UserNode = {
-            ...node,
-            // Mock: 50% chance of having recent post (within last 7 days)
-            last_post_timestamp: Math.random() > 0.5 ? Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000 : undefined,
-            // Mock: Random account type
-            account_type: mockAccountType,
-            // Mock: 20% chance of being inactive
-            is_inactive: Math.random() > 0.8,
-          };
-          results.push(mockNode);
-        });
+        receivedData.edges.forEach(x => results.push(x.node));
 
         setState(prevState => {
           if (prevState.status !== "scanning") {
@@ -321,6 +309,48 @@ function App() {
         setToast({ show: false });
       }
       setToast({ show: true, text: "Scanning completed!" });
+      
+      // Now fetch additional user data (last post, account type)
+      setToast({ show: true, text: "Fetching user profile data..." });
+      const updatedResults = await Promise.all(
+        results.map(async (user) => {
+          try {
+            // Fetch last post timestamp
+            const lastPostTimestamp = await fetchUserLastPostTimestamp(user.username);
+            
+            // Fetch account type
+            const accountType = await fetchUserAccountType(user.username);
+            
+            // Determine if inactive (no post in last 6 months)
+            const isInactive = lastPostTimestamp ? 
+              (Date.now() - lastPostTimestamp) > (6 * 30 * 24 * 60 * 60 * 1000) : 
+              true;
+            
+            return {
+              ...user,
+              last_post_timestamp: lastPostTimestamp,
+              account_type: accountType,
+              is_inactive: isInactive,
+            };
+          } catch (error) {
+            console.error(`Error fetching data for ${user.username}:`, error);
+            return user;
+          }
+        })
+      );
+      
+      // Update state with enhanced data
+      setState(prevState => {
+        if (prevState.status !== "scanning") {
+          return prevState;
+        }
+        return {
+          ...prevState,
+          results: updatedResults,
+        };
+      });
+      
+      setToast({ show: true, text: "Profile data fetched successfully!" });
     };
     scan();
     // Dependency array not entirely legit, but works this way. TODO: Find a way to fix.

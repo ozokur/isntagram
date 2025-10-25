@@ -162,3 +162,57 @@ export function urlGenerator(nextCode?: string): string {
 export function unfollowUserUrlGenerator(idToUnfollow: string): string {
   return `https://www.instagram.com/web/friendships/${idToUnfollow}/unfollow/`;
 }
+
+/**
+ * Fetch user's last post timestamp from their profile page
+ * This makes a request to Instagram's GraphQL API to get the user's media
+ */
+export async function fetchUserLastPostTimestamp(username: string): Promise<number | undefined> {
+  try {
+    // Instagram GraphQL query to get user's posts
+    const query = {
+      query_hash: "e769aa90f347a32423763fc490445c3f",
+      variables: JSON.stringify({
+        id: username,
+        first: 1, // Only get the first (most recent) post
+      })
+    };
+    
+    const url = `https://www.instagram.com/graphql/query/?query_hash=${query.query_hash}&variables=${query.variables}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    // Parse the response to get the timestamp of the first post
+    if (data.data?.user?.edge_owner_to_timeline_media?.edges?.length > 0) {
+      const firstPost = data.data.user.edge_owner_to_timeline_media.edges[0].node;
+      return firstPost.taken_at_timestamp * 1000; // Convert to milliseconds
+    }
+    
+    return undefined;
+  } catch (error) {
+    console.error(`Error fetching last post for ${username}:`, error);
+    return undefined;
+  }
+}
+
+/**
+ * Fetch account type (business/personal/creator) from user profile
+ */
+export async function fetchUserAccountType(username: string): Promise<'business' | 'personal' | 'creator' | undefined> {
+  try {
+    const response = await fetch(`https://www.instagram.com/${username}/?__a=1&__d=dis`);
+    const data = await response.json();
+    
+    if (data.graphql?.user?.is_business_account) {
+      return 'business';
+    } else if (data.graphql?.user?.is_professional_account) {
+      return 'creator';
+    }
+    
+    return 'personal';
+  } catch (error) {
+    console.error(`Error fetching account type for ${username}:`, error);
+    return undefined;
+  }
+}
