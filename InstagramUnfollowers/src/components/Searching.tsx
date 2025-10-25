@@ -50,8 +50,61 @@ export const Searching = ({
         <menu className="flex column m-clear p-clear">
           <p>Filter</p>
           <div style={{padding: '10px', background: '#222', borderRadius: '5px', marginBottom: '10px', textAlign: 'center'}}>
-            <span style={{fontSize: '0.8em', color: '#00FFFF'}}>Ozan Okur Unfollowers v1.0.0</span>
+            <span style={{fontSize: '0.8em', color: '#00FFFF'}}>Ozan Okur Unfollowers v1.1.0</span>
           </div>
+          
+          <p style={{marginTop: '15px', fontWeight: 'bold'}}>🎯 Advanced Filters</p>
+          
+          <label className="badge m-small">
+            <input
+              type="checkbox"
+              name="business"
+              checked={state.filter.accountTypes?.business !== false}
+              onChange={handleScanFilter}
+            />
+            &nbsp;Business
+          </label>
+          <label className="badge m-small">
+            <input
+              type="checkbox"
+              name="personal"
+              checked={state.filter.accountTypes?.personal !== false}
+              onChange={handleScanFilter}
+            />
+            &nbsp;Personal
+          </label>
+          <label className="badge m-small">
+            <input
+              type="checkbox"
+              name="creator"
+              checked={state.filter.accountTypes?.creator !== false}
+              onChange={handleScanFilter}
+            />
+            &nbsp;Creator
+          </label>
+          
+          <label className="badge m-small">
+            <input
+              type="checkbox"
+              name="lastPostEnabled"
+              checked={state.filter.lastPostActivity?.enabled || false}
+              onChange={handleScanFilter}
+            />
+            &nbsp;Last Post Active
+          </label>
+          
+          <label className="badge m-small">
+            <input
+              type="checkbox"
+              name="showInactive"
+              checked={state.filter.showInactive || false}
+              onChange={handleScanFilter}
+            />
+            &nbsp;Show Inactive
+          </label>
+          
+          <p style={{marginTop: '15px', fontWeight: 'bold'}}>📋 Basic Filters</p>
+          
           <label className="badge m-small">
             <input
               type="checkbox"

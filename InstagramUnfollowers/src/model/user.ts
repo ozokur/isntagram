@@ -19,6 +19,9 @@ export interface UserNode {
     readonly follows_viewer: boolean;
     readonly requested_by_viewer: boolean;
     readonly reel: Reel;
+    readonly last_post_timestamp?: number;
+    readonly account_type?: 'business' | 'personal' | 'creator';
+    readonly is_inactive?: boolean;
 }
 
 export interface Reel {

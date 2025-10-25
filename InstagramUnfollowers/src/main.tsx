@@ -86,6 +86,16 @@ function App() {
         showVerified: true,
         showPrivate: true,
         showWithOutProfilePicture: true,
+        accountTypes: {
+          business: true,
+          personal: true,
+          creator: true,
+        },
+        lastPostActivity: {
+          enabled: false,
+          days: 7,
+        },
+        showInactive: true,
       },
     });
   };
@@ -103,15 +113,33 @@ function App() {
         return;
       }
     }
+    
+    const name = e.currentTarget.name;
+    const checked = e.currentTarget.checked;
+    
+    let newFilter: any = { ...state.filter };
+    
+    // Handle nested properties
+    if (name === 'business' || name === 'personal' || name === 'creator') {
+      newFilter.accountTypes = {
+        ...state.filter.accountTypes,
+        [name]: checked,
+      };
+    } else if (name === 'lastPostEnabled') {
+      newFilter.lastPostActivity = {
+        ...state.filter.lastPostActivity,
+        enabled: checked,
+      };
+    } else {
+      newFilter[name] = checked;
+    }
+    
     setState({
       ...state,
       // Make sure to clear selected results when changing filter options. This is to avoid having
       // users selected in the unfollow queue but not visible in the UI, which would be confusing.
       selectedResults: [],
-      filter: {
-        ...state.filter,
-        [e.currentTarget.name]: e.currentTarget.checked,
-      },
+      filter: newFilter,
     });
   };
 

@@ -66,7 +66,7 @@ export const Toolbar = ({
           <div className="logo-text">
             <span>Ozan Okur</span>
             <span>Unfollowers</span>
-            <span style={{fontSize: '0.5em', color: '#00FFFF', marginTop: '5px'}}>v1.0.0</span>
+            <span style={{fontSize: '0.5em', color: '#00FFFF', marginTop: '5px'}}>v1.1.0</span>
           </div>
         </div>
         <button
@@ -104,12 +104,12 @@ export const Toolbar = ({
                   "🎨 Custom Ozan Okur branding",
                   "🖥️ Single-click startup for Mac/Windows",
                   "📊 Server status monitoring",
-                  "🌐 Enhanced filtering options",
+                  "🎯 Advanced filtering (account type, last post, inactive)",
                   "📄 CSV export functionality",
                   "📈 Analytics dashboard",
                   "🌍 Multi-language support (TR/EN)"
                 ];
-                alert(`Ozan Okur Unfollowers\n\nVersion: 1.0.0\n\nFeatures:\n${features.join('\n')}\n\nGitHub: https://github.com/ozokur/isntagram`);
+                alert(`Ozan Okur Unfollowers\n\nVersion: 1.1.0\n\nFeatures:\n${features.join('\n')}\n\nGitHub: https://github.com/ozokur/isntagram`);
               }}
             >
               📋 Version
@@ -122,12 +122,14 @@ export const Toolbar = ({
                   "🎨 Custom branding: Ozan Okur Unfollowers",
                   "🖥️ Mac/Windows startup scripts",
                   "📊 Server status checker",
-                  "🔍 Enhanced filtering (account type, last post)",
+                  "🎯 Advanced filtering (Business/Personal/Creator accounts)",
+                  "⏰ Last post activity filtering (1 week, 1 month, etc.)",
+                  "😴 Inactive account detection",
                   "📄 CSV export functionality",
                   "📈 Analytics dashboard",
                   "🌍 Multi-language support"
                 ];
-                alert(`Changelog - Version 1.0.0\n\n${items.join('\n')}\n\nSee CHANGELOG.md for full details`);
+                alert(`Changelog - Version 1.1.0\n\n${items.join('\n')}\n\nSee CHANGELOG.md for full details`);
               }}
             >
               📝 Changelog

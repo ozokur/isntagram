@@ -48,16 +48,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-10-25
+
+### Added
+- 🎯 **Advanced Filtering Options** - Ana sayfada gelişmiş filtreleme
+  - ✅ Hesap türü filtreleri (Business, Personal, Creator)
+  - ✅ Son post aktivitesi filtreleme (son 1 hafta, 1 ay, 3 ay, 6 ay)
+  - ✅ İnaktif hesap filtreleme
+- 📊 **Enhanced User Profile Fields** - Kullanıcı profillerinde ekstra bilgiler
+  - Last post timestamp
+  - Account type detection
+  - Inactive account detection
+- 🌍 **Multi-language Infrastructure** - TR/EN dil desteği altyapısı
+- 📄 **CSV Export Infrastructure** - CSV dışa aktarma altyapısı
+- 📈 **Analytics Dashboard** - İstatistikler için ayrı sayfa (`analytics.html`)
+
+### Changed
+- 🔄 **Filter State Management** - Filtreleme state yönetimi iyileştirildi
+- 🎨 **UI Improvements** - Filter sidebar'da advanced filters bölümü eklendi
+- 📱 **Responsive Design** - Enhanced filtering için responsive tasarım
+
+### Technical
+- Updated `ScanningFilter` interface with new fields
+- Updated `UserNode` interface with metadata fields
+- Enhanced `handleScanFilter` function for nested properties
+- TypeScript type safety improvements
+
+### Files Changed
+- `InstagramUnfollowers/src/model/scanning-filter.ts` - Added advanced filter fields
+- `InstagramUnfollowers/src/model/user.ts` - Added user metadata fields
+- `InstagramUnfollowers/src/components/Searching.tsx` - Added advanced filter UI
+- `InstagramUnfollowers/src/main.tsx` - Updated filter state management
+- `analytics.html` - Created analytics dashboard
+- `filtering.html` - Created standalone filtering page
+- `languages/tr.json` - Turkish translations
+- `languages/en.json` - English translations
+
+---
+
 ## Upcoming Features
 
-### Planned for v1.1.0
-- [ ] Multi-language support
-- [ ] Enhanced filtering options
-- [ ] Export to CSV
-- [ ] Scheduled unfollow
-- [ ] Analytics dashboard
-
 ### Planned for v1.2.0
+- [ ] Full scheduled unfollow implementation
+- [ ] Real-time CSV export functionality
+- [ ] Advanced analytics integration
 - [ ] Mobile app version
 - [ ] Cloud sync
 - [ ] Multi-account support
