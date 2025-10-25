@@ -172,88 +172,18 @@ export function unfollowUserUrlGenerator(idToUnfollow: string): string {
  * This makes a request to Instagram's GraphQL API to get the user's media
  */
 export async function fetchUserLastPostTimestamp(userId: string): Promise<number | undefined> {
-  try {
-    // Instagram GraphQL query to get user's posts
-    // Using the same query hash as Instagram uses for user media
-    const queryHash = "e769aa90f347a32423763fc490445c3f";
-    const variables = {
-      id: userId,
-      first: 1, // Only get the first (most recent) post
-    };
-    
-    const url = `https://www.instagram.com/graphql/query/?query_hash=${queryHash}&variables=${encodeURIComponent(JSON.stringify(variables))}`;
-    
-    const response = await fetch(url);
-    
-    // Check for rate limit
-    if (response.status === 429) {
-      throw new Error('429 Rate limit exceeded');
-    }
-    
-    // Check if response is JSON
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.warn(`[User ID: ${userId}] Response is not JSON, skipping last post fetch`);
-      return undefined;
-    }
-    
-    const data = await response.json();
-    
-    // Debug: log the response
-    console.log(`[User ID: ${userId}] Fetch response:`, data);
-    
-    // Parse the response to get the timestamp of the first post
-    if (data.data?.user?.edge_owner_to_timeline_media?.edges?.length > 0) {
-      const firstPost = data.data.user.edge_owner_to_timeline_media.edges[0].node;
-      const timestamp = firstPost.taken_at_timestamp * 1000; // Convert to milliseconds
-      console.log(`[User ID: ${userId}] Last post timestamp:`, timestamp, new Date(timestamp));
-      return timestamp;
-    }
-    
-    console.log(`[User ID: ${userId}] No posts found`);
-    return undefined;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('429')) {
-      throw error; // Re-throw rate limit errors
-    }
-    console.warn(`[User ID: ${userId}] Could not fetch last post (rate limit or user not found)`);
-    return undefined;
-  }
+  // Disabled due to Instagram rate limiting
+  // Instagram's GraphQL API has strict rate limits that prevent reliable fetching
+  console.log(`[User ID: ${userId}] Last post fetch disabled (rate limiting)`);
+  return undefined;
 }
 
 /**
  * Fetch account type (business/personal/creator) from user profile
  */
 export async function fetchUserAccountType(username: string): Promise<'business' | 'personal' | 'creator' | undefined> {
-  try {
-    const response = await fetch(`https://www.instagram.com/${username}/?__a=1&__d=dis`);
-    
-    // Check for rate limit
-    if (response.status === 429) {
-      throw new Error('429 Rate limit exceeded');
-    }
-    
-    // Check if response is JSON
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.warn(`[${username}] Response is not JSON, skipping account type fetch`);
-      return undefined;
-    }
-    
-    const data = await response.json();
-    
-    if (data.graphql?.user?.is_business_account) {
-      return 'business';
-    } else if (data.graphql?.user?.is_professional_account) {
-      return 'creator';
-    }
-    
-    return 'personal';
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('429')) {
-      throw error; // Re-throw rate limit errors
-    }
-    console.warn(`[${username}] Could not fetch account type (rate limit or user not found)`);
-    return undefined;
-  }
+  // Disabled due to Instagram rate limiting
+  // Default to 'personal' for all accounts
+  console.log(`[${username}] Account type fetch disabled (rate limiting)`);
+  return 'personal';
 }

@@ -53,81 +53,11 @@ export const Searching = ({
             <span style={{fontSize: '0.8em', color: '#00FFFF'}}>Ozan Okur Unfollowers v1.1.0</span>
           </div>
           
-          <p style={{marginTop: '15px', fontWeight: 'bold'}}>🎯 Advanced Filters</p>
+          <p style={{marginTop: '15px', fontWeight: 'bold'}}>📋 Filters</p>
           
-          <label className="badge m-small">
-            <input
-              type="checkbox"
-              name="business"
-              checked={state.filter.accountTypes?.business !== false}
-              onChange={handleScanFilter}
-            />
-            &nbsp;Business
-          </label>
-          <label className="badge m-small">
-            <input
-              type="checkbox"
-              name="personal"
-              checked={state.filter.accountTypes?.personal !== false}
-              onChange={handleScanFilter}
-            />
-            &nbsp;Personal
-          </label>
-          <label className="badge m-small">
-            <input
-              type="checkbox"
-              name="creator"
-              checked={state.filter.accountTypes?.creator !== false}
-              onChange={handleScanFilter}
-            />
-            &nbsp;Creator
-          </label>
-          
-          <label className="badge m-small">
-            <input
-              type="checkbox"
-              name="lastPostEnabled"
-              checked={state.filter.lastPostActivity?.enabled || false}
-              onChange={handleScanFilter}
-            />
-            &nbsp;Last Post Within
-          </label>
-          {state.filter.lastPostActivity?.enabled && (
-            <select
-              style={{width: '100%', padding: '5px', marginBottom: '10px', background: '#222', color: '#fff', border: '1px solid #333', borderRadius: '5px'}}
-              value={state.filter.lastPostActivity?.days || 7}
-              onChange={(e) => {
-                const target = e.target as HTMLSelectElement;
-                setState({
-                  ...state,
-                  filter: {
-                    ...state.filter,
-                    lastPostActivity: {
-                      ...state.filter.lastPostActivity!,
-                      days: parseInt(target.value),
-                    },
-                  },
-                });
-              }}
-            >
-              <option value={7}>Last 1 Week</option>
-              <option value={30}>Last 1 Month</option>
-              <option value={90}>Last 3 Months</option>
-              <option value={180}>Last 6 Months</option>
-            </select>
-          )}
-          
-          <label className="badge m-small">
-            <input
-              type="checkbox"
-              name="showInactive"
-              checked={state.filter.showInactive || false}
-              onChange={handleScanFilter}
-            />
-            &nbsp;Show Inactive
-          </label>
-          
-          <p style={{marginTop: '15px', fontWeight: 'bold'}}>📋 Basic Filters</p>
+          <div style={{padding: '10px', background: '#333', borderRadius: '5px', marginBottom: '10px', fontSize: '0.85em', color: '#ffaa00'}}>
+            ⚠️ Advanced filters (Account Type, Last Post) temporarily disabled due to Instagram rate limiting.
+          </div>
           
           <label className="badge m-small">
             <input
