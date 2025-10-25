@@ -277,7 +277,21 @@ function App() {
         hasNext = receivedData.page_info.has_next_page;
         url = urlGenerator(receivedData.page_info.end_cursor);
         currentFollowedUsersCount += receivedData.edges.length;
-        receivedData.edges.forEach(x => results.push(x.node));
+        receivedData.edges.forEach(x => {
+          const node = x.node;
+          // Add mock data for testing filters (will be replaced with real API data later)
+          const mockAccountType: 'business' | 'personal' | 'creator' = Math.random() > 0.66 ? 'business' : Math.random() > 0.5 ? 'creator' : 'personal';
+          const mockNode: UserNode = {
+            ...node,
+            // Mock: 50% chance of having recent post (within last 7 days)
+            last_post_timestamp: Math.random() > 0.5 ? Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000 : undefined,
+            // Mock: Random account type
+            account_type: mockAccountType,
+            // Mock: 20% chance of being inactive
+            is_inactive: Math.random() > 0.8,
+          };
+          results.push(mockNode);
+        });
 
         setState(prevState => {
           if (prevState.status !== "scanning") {
