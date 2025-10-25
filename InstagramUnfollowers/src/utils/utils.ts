@@ -184,6 +184,14 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
     const url = `https://www.instagram.com/graphql/query/?query_hash=${queryHash}&variables=${encodeURIComponent(JSON.stringify(variables))}`;
     
     const response = await fetch(url);
+    
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.warn(`[User ID: ${userId}] Response is not JSON, skipping last post fetch`);
+      return undefined;
+    }
+    
     const data = await response.json();
     
     // Debug: log the response
@@ -200,7 +208,7 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
     console.log(`[User ID: ${userId}] No posts found`);
     return undefined;
   } catch (error) {
-    console.error(`Error fetching last post for user ID ${userId}:`, error);
+    console.warn(`[User ID: ${userId}] Could not fetch last post (rate limit or user not found)`);
     return undefined;
   }
 }
@@ -211,6 +219,14 @@ export async function fetchUserLastPostTimestamp(userId: string): Promise<number
 export async function fetchUserAccountType(username: string): Promise<'business' | 'personal' | 'creator' | undefined> {
   try {
     const response = await fetch(`https://www.instagram.com/${username}/?__a=1&__d=dis`);
+    
+    // Check if response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      console.warn(`[${username}] Response is not JSON, skipping account type fetch`);
+      return undefined;
+    }
+    
     const data = await response.json();
     
     if (data.graphql?.user?.is_business_account) {
@@ -221,7 +237,7 @@ export async function fetchUserAccountType(username: string): Promise<'business'
     
     return 'personal';
   } catch (error) {
-    console.error(`Error fetching account type for ${username}:`, error);
+    console.warn(`[${username}] Could not fetch account type (rate limit or user not found)`);
     return undefined;
   }
 }
