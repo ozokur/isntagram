@@ -64,8 +64,9 @@ export const Toolbar = ({
         >
           <Logo />
           <div className="logo-text">
-            <span>Instagram</span>
+            <span>Ozan Okur</span>
             <span>Unfollowers</span>
+            <span style={{fontSize: '0.5em', color: '#00FFFF', marginTop: '5px'}}>v1.0.0</span>
           </div>
         </div>
         <button
@@ -93,6 +94,46 @@ export const Toolbar = ({
         >
           Copy List
         </button>
+        {state.status === "initial" && (
+          <>
+            <button
+              className="copy-list"
+              onClick={() => {
+                const features = [
+                  "✨ Browser-based Instagram unfollow tool",
+                  "🎨 Custom Ozan Okur branding",
+                  "🖥️ Single-click startup for Mac/Windows",
+                  "📊 Server status monitoring",
+                  "🌐 Enhanced filtering options",
+                  "📄 CSV export functionality",
+                  "📈 Analytics dashboard",
+                  "🌍 Multi-language support (TR/EN)"
+                ];
+                alert(`Ozan Okur Unfollowers\n\nVersion: 1.0.0\n\nFeatures:\n${features.join('\n')}\n\nGitHub: https://github.com/ozokur/isntagram`);
+              }}
+            >
+              📋 Version
+            </button>
+            <button
+              className="copy-list"
+              onClick={() => {
+                const items = [
+                  "✨ Added InstagramUnfollowers integration",
+                  "🎨 Custom branding: Ozan Okur Unfollowers",
+                  "🖥️ Mac/Windows startup scripts",
+                  "📊 Server status checker",
+                  "🔍 Enhanced filtering (account type, last post)",
+                  "📄 CSV export functionality",
+                  "📈 Analytics dashboard",
+                  "🌍 Multi-language support"
+                ];
+                alert(`Changelog - Version 1.0.0\n\n${items.join('\n')}\n\nSee CHANGELOG.md for full details`);
+              }}
+            >
+              📝 Changelog
+            </button>
+          </>
+        )}
         {
           state.status === "initial" && <SettingIcon onClickLogo={() => { setSettingMenu(true); }} />
         }
