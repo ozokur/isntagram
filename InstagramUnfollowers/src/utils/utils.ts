@@ -82,7 +82,11 @@ export function getUsersForDisplay(
     }
     
     // Advanced filters - Last Post Activity
-    if (filter.lastPostActivity?.enabled && result.last_post_timestamp) {
+    if (filter.lastPostActivity?.enabled) {
+      // If no timestamp, skip this user
+      if (!result.last_post_timestamp) {
+        continue;
+      }
       const daysSinceLastPost = (Date.now() - result.last_post_timestamp) / (1000 * 60 * 60 * 24);
       if (daysSinceLastPost > filter.lastPostActivity.days) {
         continue;
