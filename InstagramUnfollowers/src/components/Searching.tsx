@@ -90,8 +90,32 @@ export const Searching = ({
               checked={state.filter.lastPostActivity?.enabled || false}
               onChange={handleScanFilter}
             />
-            &nbsp;Last Post Active
+            &nbsp;Last Post Within
           </label>
+          {state.filter.lastPostActivity?.enabled && (
+            <select
+              style={{width: '100%', padding: '5px', marginBottom: '10px', background: '#222', color: '#fff', border: '1px solid #333', borderRadius: '5px'}}
+              value={state.filter.lastPostActivity?.days || 7}
+              onChange={(e) => {
+                const target = e.target as HTMLSelectElement;
+                setState({
+                  ...state,
+                  filter: {
+                    ...state.filter,
+                    lastPostActivity: {
+                      ...state.filter.lastPostActivity!,
+                      days: parseInt(target.value),
+                    },
+                  },
+                });
+              }}
+            >
+              <option value={7}>Last 1 Week</option>
+              <option value={30}>Last 1 Month</option>
+              <option value={90}>Last 3 Months</option>
+              <option value={180}>Last 6 Months</option>
+            </select>
+          )}
           
           <label className="badge m-small">
             <input

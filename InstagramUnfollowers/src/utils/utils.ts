@@ -66,6 +66,34 @@ export function getUsersForDisplay(
     if (!filter.showWithOutProfilePicture && WITHOUT_PROFILE_PICTURE_URL_IDS.some(id => result.profile_pic_url.includes(id))) {
       continue;
     }
+    
+    // Advanced filters - Account Type
+    if (filter.accountTypes) {
+      const accountType = result.account_type || 'personal'; // Default to personal if not available
+      if (!filter.accountTypes.business && accountType === 'business') {
+        continue;
+      }
+      if (!filter.accountTypes.personal && accountType === 'personal') {
+        continue;
+      }
+      if (!filter.accountTypes.creator && accountType === 'creator') {
+        continue;
+      }
+    }
+    
+    // Advanced filters - Last Post Activity
+    if (filter.lastPostActivity?.enabled && result.last_post_timestamp) {
+      const daysSinceLastPost = (Date.now() - result.last_post_timestamp) / (1000 * 60 * 60 * 24);
+      if (daysSinceLastPost > filter.lastPostActivity.days) {
+        continue;
+      }
+    }
+    
+    // Advanced filters - Inactive Accounts
+    if (!filter.showInactive && result.is_inactive) {
+      continue;
+    }
+    
     const userMatchesSearchTerm =
       result.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       result.full_name.toLowerCase().includes(searchTerm.toLowerCase());
